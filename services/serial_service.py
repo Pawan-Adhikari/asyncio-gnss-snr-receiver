@@ -6,9 +6,9 @@ import time
 from CircularQueue.AsyncCircularQueue import AsyncCircularQueue
 
 
-async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue):
+async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, SERIAL):
     while True:
-        port_name = '/dev/ttyACM1'
+        port_name = SERIAL
         print(f"Connecting to serial port: {port_name}")
 
         while True:

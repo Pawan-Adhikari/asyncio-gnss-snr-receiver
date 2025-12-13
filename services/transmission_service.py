@@ -1,26 +1,25 @@
 import asyncio
 from packets.structs import lineData
 import socket
-from globals.globalVars import HOST, PORT
 from CircularQueue.AsyncCircularQueue import AsyncCircularQueue
 
 client = None
 reconnect_lock = asyncio.Lock()
 
-async def transmitGP(GPQueue):
+async def transmitGP(GPQueue, HOST, PORT):
     global client
     while True:
         currentGPData: lineData = await GPQueue.get()
         currentGPData.display()
         try:
             client.sendall(currentGPData.returnCSV().encode())
-        except (BrokenPipeError, ConnectionResetError, OSError, Exception):
+        except (Exception):
             print("Server disconnected! Retrying connection in 2seconds.")
             await asyncio.sleep(2)
             await startClient(HOST, PORT)
 
         
-async def transmitGL(GLQueue):
+async def transmitGL(GLQueue, HOST, PORT):
 
     global client
     while True:
@@ -28,7 +27,7 @@ async def transmitGL(GLQueue):
         currentGLData.display()
         try:
             client.sendall(currentGLData.returnCSV().encode())
-        except (BrokenPipeError, ConnectionResetError, OSError, Exception):
+        except (Exception):
             print("Server disconnected! Retrying connection in 2seconds.")
             await asyncio.sleep(2)
             await startClient(HOST, PORT)
@@ -36,7 +35,7 @@ async def transmitGL(GLQueue):
 
 
 
-async def startClient(host = HOST, port: int = PORT):
+async def startClient(host, port):
     #print("Iwascalled")
     global client
     loop = asyncio.get_event_loop()
