@@ -3,6 +3,8 @@ import asyncio
 IMUPACKET_CHECKSUM = 0xAA
 OTHERSENSORSPACKET_CHECKSUM = 0x55
 
+SAMPLE_TIME_INTERVAL = 5 #1 data every 5 seconds.
+
 HOST_1 = "192.168.1.66"
 SERIAL_1 = '/dev/ttyACM1'
 PORT_1 = 8085

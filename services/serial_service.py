@@ -6,9 +6,9 @@ import time
 from CircularQueue.AsyncCircularQueue import AsyncCircularQueue
 
 
-async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, SERIAL):
+async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, SERIAL, sample_count):
     while True:
-        port_name = SERIAL
+        port_name = SERIAL    
         print(f"Connecting to serial port: {port_name}")
 
         while True:
@@ -22,9 +22,10 @@ async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, 
                 await asyncio.sleep(2)
 
         loop = asyncio.get_running_loop()
-
         GPLineData = lineData(constellation="GP")
         GLLineData = lineData(constellation="GL")
+        lastPushTimestamp_GP = 0
+        lastPushTimestamp_GL = 0
         while True:
             try:
                 raw_line = await loop.run_in_executor(None, ser.readline)
@@ -57,8 +58,12 @@ async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, 
 
                     if msg_dict['num_messages'] == msg_dict['msg_num']:
                         GPLineData.timestamp = int(time.time())
-                        await GPQueue.put(GPLineData)
+                        
+                        if GPLineData.timestamp - lastPushTimestamp_GP >= sample_count:
+                            await GPQueue.put(GPLineData)
+                            lastPushTimestamp_GP = int(time.time())
                         GPLineData = lineData(constellation="GP")
+                        
 
                 #print(f"DEBUG: {line}") 
                 if line.startswith('$GLGSV'):
@@ -89,7 +94,9 @@ async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, 
                     if msg_dict['num_messages'] == msg_dict['msg_num']:
                         GLLineData.timestamp = int(time.time())
                         #GLLineData.display()
-                        await GLQueue.put(GLLineData)
+                        if GLLineData.timestamp - lastPushTimestamp_GL >= sample_count:
+                            await GLQueue.put(GLLineData)
+                            lastPushTimestamp_GL = int(time.time())
                         GLLineData = lineData(constellation="GL")
 
 
