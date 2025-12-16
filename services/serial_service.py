@@ -6,7 +6,7 @@ import time
 from CircularQueue.AsyncCircularQueue import AsyncCircularQueue
 
 
-async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, SERIAL, sample_count):
+async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, SERIAL, sample_count, ProcessQueueGP, ProcessQueueGL):
     while True:
         port_name = SERIAL    
         print(f"Connecting to serial port: {port_name}")
@@ -61,6 +61,7 @@ async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, 
                         
                         if GPLineData.timestamp - lastPushTimestamp_GP >= sample_count:
                             await GPQueue.put(GPLineData)
+                            ProcessQueueGP.put(GPLineData)
                             lastPushTimestamp_GP = int(time.time())
                         GPLineData = lineData(constellation="GP")
                         
@@ -96,6 +97,7 @@ async def serialRead(GPQueue: AsyncCircularQueue , GLQueue: AsyncCircularQueue, 
                         #GLLineData.display()
                         if GLLineData.timestamp - lastPushTimestamp_GL >= sample_count:
                             await GLQueue.put(GLLineData)
+                            ProcessQueueGL.put(GLLineData)
                             lastPushTimestamp_GL = int(time.time())
                         GLLineData = lineData(constellation="GL")
 

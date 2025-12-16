@@ -5,7 +5,7 @@ OTHERSENSORSPACKET_CHECKSUM = 0x55
 
 SAMPLE_TIME_INTERVAL = 5 #1 data every 5 seconds.
 
-HOST_1 = "192.168.1.66"
+HOST_1 = "192.168.1.150"
 SERIAL_1 = '/dev/ttyACM1'
 PORT_1 = 8085
 PATH_1 = "/home/glstation/BackupFromPi/Documents/Logs/GNSS/RECEIVER1"

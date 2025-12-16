@@ -14,6 +14,7 @@ class lineData:
         self.timestamp = timestamp
         self.constellation = constellation
         self.data_list = data_list if data_list is not None else []
+
     def returnCSV(self):
         sat_data_str = ",".join([data.returnCSV() for data in self.data_list])
         CSVStr = f'{self.timestamp},{self.constellation},{sat_data_str}\n'
