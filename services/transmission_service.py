@@ -34,7 +34,6 @@ async def transmitGL(GLQueue, HOST, PORT):
 
 
 
-
 async def startClient(host, port):
     #print("Iwascalled")
     global client
